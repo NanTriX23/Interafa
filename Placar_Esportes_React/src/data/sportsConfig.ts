@@ -238,11 +238,6 @@ export const SPORTS_CONFIG: SportConfig[] = [
     events: [
       { id: "speed-masc", name: "Speed Masculino", tableType: "ranking" },
       { id: "speed-fem", name: "Speed Feminino", tableType: "ranking" },
-      { id: "boulder-masc", name: "Boulder Masculino", tableType: "ranking" },
-      { id: "boulder-fem", name: "Boulder Feminino", tableType: "ranking" },
-      { id: "lead-masc", name: "Lead Masculino", tableType: "ranking" },
-      { id: "lead-fem", name: "Lead Feminino", tableType: "ranking" },
-      { id: "combinado", name: "Combinado", tableType: "ranking" },
       { id: "GERAL", name: "Geral", tableType: "ranking" }
     ]
   }
