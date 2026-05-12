@@ -8,7 +8,7 @@ export const useSupabase = (sportId: string, eventId: string, tableType: string)
   useEffect(() => {
     if (!sportId || !eventId) return;
 
-    const tableName = tableType === 'matches' ? 'matches' : tableType === 'medals' ? 'medals' : 'rankings';
+    const tableName = (tableType === 'matches' || tableType === 'matches_sets') ? 'matches' : tableType === 'medals' ? 'medals' : 'rankings';
 
     const fetchData = async () => {
       setLoading(true);

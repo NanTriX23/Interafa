@@ -32,6 +32,33 @@ export const AdminPanel = () => {
     }
   };
 
+  // ── Edit / Delete custom events ──────────────────────────────────────────
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [editEventForm, setEditEventForm] = useState({ name: '', table_type: 'ranking' });
+
+  const startEditEvent = (ev: { id: string; name: string; tableType: string }) => {
+    setEditingEventId(ev.id);
+    setEditEventForm({ name: ev.name, table_type: ev.tableType });
+  };
+
+  const handleSaveEvent = async () => {
+    if (!editEventForm.name) return alert('O nome não pode ser vazio');
+    const { error } = await supabase
+      .from('custom_events')
+      .update({ name: editEventForm.name, table_type: editEventForm.table_type })
+      .eq('id', editingEventId);
+    if (error) alert('Erro ao salvar: ' + error.message);
+    else setEditingEventId(null);
+  };
+
+  const handleDeleteCustomEvent = async (id: string, name: string) => {
+    if (!window.confirm(`Excluir modalidade "${name}"?\nTodos os resultados vinculados serão removidos.`)) return;
+    const { error } = await supabase.from('custom_events').delete().eq('id', id);
+    if (error) alert('Erro ao excluir: ' + error.message);
+    else if (selectedEventId === id) setSelectedEventId(sport?.events[0]?.id || '');
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
   // Forms states
   const [newMatch, setNewMatch] = useState({ match_number: 'Jogo 1', team1: '', team2: '' });
   const [newRank, setNewRank] = useState({ position: 1, athlete: '', team: '', time_mark: '' });
@@ -147,7 +174,7 @@ export const AdminPanel = () => {
       </div>
 
       {/* CREATE NEW MODALITY */}
-      <div style={{ background: '#111', color: 'white', padding: '15px', borderRadius: '10px', marginBottom: '20px', border: '1px solid #333' }}>
+      <div style={{ background: '#111', color: 'white', padding: '15px', borderRadius: '10px', marginBottom: '12px', border: '1px solid #333' }}>
         <h3 style={{ marginTop: 0 }}>➕ Adicionar Nova Modalidade (Customizada)</h3>
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <input 
@@ -161,7 +188,9 @@ export const AdminPanel = () => {
             onChange={e => setNewCustomEvent({...newCustomEvent, table_type: e.target.value})} 
             style={{ padding: '8px', borderRadius: '4px' }}
           >
-            <option value="ranking">Ranking (Tempo/Marca/Notas)</option>
+            <option value="ranking_time">Ranking — Atleta, Equipe, Tempo</option>
+            <option value="ranking_mark">Ranking — Atleta, Equipe, Marca</option>
+            <option value="ranking_points">Ranking — Atleta, Equipe, Pontos</option>
             <option value="matches">Confrontos / Partidas (1x1)</option>
           </select>
           <button onClick={handleAddCustomEvent} style={{ background: '#3b82f6', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', border: 'none', color: 'white', fontWeight: 'bold' }}>
@@ -170,12 +199,81 @@ export const AdminPanel = () => {
         </div>
       </div>
 
+      {/* MANAGE EXISTING CUSTOM MODALITIES */}
+      {customEvents.length > 0 && (
+        <div style={{ background: '#111', color: 'white', padding: '15px', borderRadius: '10px', marginBottom: '20px', border: '1px solid #444' }}>
+          <h3 style={{ marginTop: 0, marginBottom: '12px' }}>✏️ Modalidades Customizadas — {sport?.name}</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {customEvents.map(ev => (
+              <div key={ev.id} style={{ background: '#1e1e1e', borderRadius: '8px', padding: '10px 14px', border: editingEventId === ev.id ? '1px solid #3b82f6' : '1px solid #333' }}>
+                {editingEventId === ev.id ? (
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <input
+                      value={editEventForm.name}
+                      onChange={e => setEditEventForm({ ...editEventForm, name: e.target.value })}
+                      style={{ padding: '6px 10px', borderRadius: '4px', flex: 1, minWidth: '160px', background: '#2a2a2a', color: 'white', border: '1px solid #555' }}
+                    />
+                    <select
+                      value={editEventForm.table_type}
+                      onChange={e => setEditEventForm({ ...editEventForm, table_type: e.target.value })}
+                      style={{ padding: '6px', borderRadius: '4px', background: '#2a2a2a', color: 'white', border: '1px solid #555' }}
+                    >
+                      <option value="ranking_time">Ranking — Tempo</option>
+                      <option value="ranking_mark">Ranking — Marca</option>
+                      <option value="ranking_points">Ranking — Pontos</option>
+                      <option value="matches">Partidas</option>
+                      <option value="medals">Medalhas</option>
+                    </select>
+                    <button onClick={handleSaveEvent} style={{ background: '#00A86B', padding: '6px 14px', borderRadius: '4px', border: 'none', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>
+                      Salvar
+                    </button>
+                    <button onClick={() => setEditingEventId(null)} style={{ background: '#555', padding: '6px 12px', borderRadius: '4px', border: 'none', color: 'white', cursor: 'pointer' }}>
+                      Cancelar
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                    <div>
+                      <span style={{ fontWeight: 'bold' }}>{ev.name}</span>
+                      <span style={{ marginLeft: '10px', fontSize: '11px', background: '#333', padding: '2px 8px', borderRadius: '20px', color: '#aaa' }}>
+                        {ev.tableType === 'ranking_time'   ? '📊 Ranking — Tempo' :
+                         ev.tableType === 'ranking_mark'   ? '📊 Ranking — Marca' :
+                         ev.tableType === 'ranking_points' ? '📊 Ranking — Pontos' :
+                         ev.tableType === 'ranking'        ? '📊 Ranking' :
+                         ev.tableType === 'matches'        ? '⚔️ Partidas' : '🏅 Medalhas'}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button
+                        onClick={() => startEditEvent(ev)}
+                        style={{ background: '#3b82f6', padding: '5px 12px', borderRadius: '4px', border: 'none', color: 'white', fontSize: '13px', cursor: 'pointer' }}
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCustomEvent(ev.id, ev.name)}
+                        style={{ background: '#cc0000', padding: '5px 12px', borderRadius: '4px', border: 'none', color: 'white', fontSize: '13px', cursor: 'pointer' }}
+                      >
+                        🗑️ Excluir
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div style={{ background: '#222', color: 'white', padding: '20px', borderRadius: '10px' }}>
         <h2>Gerenciar {currentEvent?.name}</h2>
         {loading && <p>Carregando...</p>}
         
-        {/* MATCHES MANAGER */}
-        {currentEvent?.tableType === 'matches' && (
+        {/* MATCHES MANAGER (partidas simples e com sets) */}
+        {(currentEvent?.tableType === 'matches' || currentEvent?.tableType === 'matches_sets') && (() => {
+          const isSets = currentEvent.tableType === 'matches_sets';
+          const pLabel = selectedSportId === 'basquete' ? 'Q' : 'S';
+          return (
           <div>
             <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
               <input placeholder="Ex: Jogo 1, Quartas..." value={newMatch.match_number} onChange={e => setNewMatch({...newMatch, match_number: e.target.value})} style={{ padding: '8px', borderRadius: '4px' }} />
@@ -191,43 +289,63 @@ export const AdminPanel = () => {
             </div>
 
             {data.map(match => (
-              <div key={match.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#333', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
-                <div style={{ flex: 1 }}>
-                  <strong>{match.match_number}</strong>
-                </div>
-                
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flex: 2, justifyContent: 'center' }}>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '12px', color: '#aaa' }}>{match.team1}</div>
-                    <div style={{ display: 'flex', gap: '5px' }}>
-                      <button onClick={() => handleUpdateScore(match.id, 'score1', match.score1, -1)} style={{ width: '30px', height: '30px', borderRadius: '15px', border: 'none', background: '#555', color: 'white', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
-                      <span style={{ fontSize: '24px', fontWeight: 'bold', width: '30px', textAlign: 'center', color: 'white' }}>{match.score1}</span>
-                      <button onClick={() => handleUpdateScore(match.id, 'score1', match.score1, 1)} style={{ width: '30px', height: '30px', borderRadius: '15px', border: 'none', background: '#555', color: 'white', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
-                    </div>
-                  </div>
+              <div key={match.id} style={{ background: '#333', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
+                {/* Header: nome + total + excluir */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isSets ? '12px' : 0 }}>
+                  <strong style={{ fontSize: '15px' }}>{match.match_number}</strong>
 
-                  <span>X</span>
-
-                  <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontSize: '12px', color: '#aaa' }}>{match.team2}</div>
-                    <div style={{ display: 'flex', gap: '5px' }}>
-                      <button onClick={() => handleUpdateScore(match.id, 'score2', match.score2, -1)} style={{ width: '30px', height: '30px', borderRadius: '15px', border: 'none', background: '#555', color: 'white', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
-                      <span style={{ fontSize: '24px', fontWeight: 'bold', width: '30px', textAlign: 'center', color: 'white' }}>{match.score2}</span>
-                      <button onClick={() => handleUpdateScore(match.id, 'score2', match.score2, 1)} style={{ width: '30px', height: '30px', borderRadius: '15px', border: 'none', background: '#555', color: 'white', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {/* Placar total */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ fontSize: '12px', color: '#aaa' }}>{match.team1}</span>
+                      <button onClick={() => handleUpdateScore(match.id, 'score1', match.score1, -1)} style={{ width: '26px', height: '26px', borderRadius: '13px', border: 'none', background: '#555', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
+                      <span style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', minWidth: '24px', textAlign: 'center' }}>{match.score1}</span>
+                      <button onClick={() => handleUpdateScore(match.id, 'score1', match.score1, 1)} style={{ width: '26px', height: '26px', borderRadius: '13px', border: 'none', background: '#555', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                      <span style={{ color: '#aaa', margin: '0 4px' }}>×</span>
+                      <button onClick={() => handleUpdateScore(match.id, 'score2', match.score2, -1)} style={{ width: '26px', height: '26px', borderRadius: '13px', border: 'none', background: '#555', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
+                      <span style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', minWidth: '24px', textAlign: 'center' }}>{match.score2}</span>
+                      <button onClick={() => handleUpdateScore(match.id, 'score2', match.score2, 1)} style={{ width: '26px', height: '26px', borderRadius: '13px', border: 'none', background: '#555', color: 'white', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                      <span style={{ fontSize: '12px', color: '#aaa' }}>{match.team2}</span>
                     </div>
+                    <button onClick={() => handleDeleteMatch(match.id)} style={{ background: '#cc0000', padding: '5px 10px', fontSize: '12px', border: 'none', borderRadius: '4px', color: 'white', cursor: 'pointer' }}>Excluir</button>
                   </div>
                 </div>
 
-                <div>
-                  <button onClick={() => handleDeleteMatch(match.id)} style={{ background: '#cc0000', padding: '5px 10px', fontSize: '12px' }}>Excluir</button>
-                </div>
+                {/* Controles de set (apenas para matches_sets) */}
+                {isSets && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+                    {[1, 2, 3, 4].map(s => (
+                      <div key={s} style={{ background: '#444', borderRadius: '6px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '12px', color: '#aaa', minWidth: '22px', fontWeight: 'bold' }}>{pLabel}{s}</span>
+                        <button onClick={() => handleUpdateScore(match.id, `set${s}_score1`, match[`set${s}_score1`] ?? 0, -1)} style={{ width: '24px', height: '24px', borderRadius: '12px', border: 'none', background: '#666', color: 'white', fontSize: '14px', cursor: 'pointer' }}>-</button>
+                        <span style={{ fontSize: '16px', fontWeight: 'bold', color: 'white', minWidth: '20px', textAlign: 'center' }}>{match[`set${s}_score1`] ?? 0}</span>
+                        <button onClick={() => handleUpdateScore(match.id, `set${s}_score1`, match[`set${s}_score1`] ?? 0, 1)} style={{ width: '24px', height: '24px', borderRadius: '12px', border: 'none', background: '#666', color: 'white', fontSize: '14px', cursor: 'pointer' }}>+</button>
+                        <span style={{ color: '#666', margin: '0 2px' }}>×</span>
+                        <button onClick={() => handleUpdateScore(match.id, `set${s}_score2`, match[`set${s}_score2`] ?? 0, -1)} style={{ width: '24px', height: '24px', borderRadius: '12px', border: 'none', background: '#666', color: 'white', fontSize: '14px', cursor: 'pointer' }}>-</button>
+                        <span style={{ fontSize: '16px', fontWeight: 'bold', color: 'white', minWidth: '20px', textAlign: 'center' }}>{match[`set${s}_score2`] ?? 0}</span>
+                        <button onClick={() => handleUpdateScore(match.id, `set${s}_score2`, match[`set${s}_score2`] ?? 0, 1)} style={{ width: '24px', height: '24px', borderRadius: '12px', border: 'none', background: '#666', color: 'white', fontSize: '14px', cursor: 'pointer' }}>+</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
-        )}
+          );
+        })()}
+
 
         {/* RANKINGS MANAGER */}
-        {currentEvent?.tableType === 'ranking' && (
+        {currentEvent?.tableType?.startsWith('ranking') && (() => {
+          const colLabel =
+            currentEvent.tableType === 'ranking_time'   ? 'Tempo' :
+            currentEvent.tableType === 'ranking_mark'   ? 'Marca' :
+            currentEvent.tableType === 'ranking_points' ? 'Pontos' : 'Tempo/Marca';
+          const colPlaceholder =
+            currentEvent.tableType === 'ranking_time'   ? 'Ex: 10.45s' :
+            currentEvent.tableType === 'ranking_mark'   ? 'Ex: 7.82m' :
+            currentEvent.tableType === 'ranking_points' ? 'Ex: 95.5' : 'Ex: 10s / 7m';
+          return (
           <div>
              <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
               <input type="number" placeholder="Pos" style={{ width: '60px', padding: '8px' }} value={newRank.position} onChange={e => setNewRank({...newRank, position: parseInt(e.target.value)})} />
@@ -238,7 +356,7 @@ export const AdminPanel = () => {
                 {AVAILABLE_TEAMS.filter(t => t).map(t => <option key={t} value={t}>{t}</option>)}
               </select>
 
-              <input placeholder="Marca (Ex: 10s)" style={{ width: '100px', padding: '8px' }} value={newRank.time_mark} onChange={e => setNewRank({...newRank, time_mark: e.target.value})} />
+              <input placeholder={colPlaceholder} style={{ width: '110px', padding: '8px' }} value={newRank.time_mark} onChange={e => setNewRank({...newRank, time_mark: e.target.value})} />
               <button onClick={handleAddRank} style={{ background: '#00A86B', padding: '8px 16px', borderRadius: '4px', border: 'none', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>Adicionar Resultado</button>
             </div>
 
@@ -248,7 +366,7 @@ export const AdminPanel = () => {
                   <th>Pos</th>
                   <th>Atleta</th>
                   <th>Equipe</th>
-                  <th>Marca</th>
+                  <th>{colLabel}</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -265,7 +383,8 @@ export const AdminPanel = () => {
               </tbody>
             </table>
           </div>
-        )}
+          );
+        })()}
         
         {/* MEDALS MANAGER */}
         {currentEvent?.tableType === 'medals' && (

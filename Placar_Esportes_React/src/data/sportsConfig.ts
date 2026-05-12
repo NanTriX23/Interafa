@@ -4,12 +4,10 @@ export interface TeamImages {
 
 export const TEAMS_IMAGES: TeamImages = {
   PERSEU: "https://scaer.com.br/wp-content/uploads/2025/06/2025-2029_Perseu_Destaque-removebg-preview-1.png",
-  UIRAÇU: "https://scaer.com.br/wp-content/uploads/2025/06/2024-2028_Uiracu_Destaque-fill-350x351-removebg-preview-2.png",
+  UIRAÇU: "/Bolacha.png",
   ATHOS: "https://scaer.com.br/wp-content/uploads/2025/06/2023-2026_Athos_Destaque-fill-350x351-1.webp",
   DRAKON: "/drakon-removebg-preview.png",
-  AMAN: "https://scaer.com.br/wp-content/uploads/2025/08/AMAN.jpeg",
-  AFA: "https://scaer.com.br/wp-content/uploads/2025/08/AFA.webp",
-  EN: "https://scaer.com.br/wp-content/uploads/2025/08/EN.jpeg",
+
 };
 
 export const TEAM_GRADIENTS: { [key: string]: string } = {
@@ -22,7 +20,7 @@ export const TEAM_GRADIENTS: { [key: string]: string } = {
 export const AVAILABLE_TEAMS = ["", "ATHOS", "UIRAÇU", "PERSEU", "DRAKON", "AMAN", "AFA", "EN"];
 export const GENERAL_TEAMS = ["ATHOS", "UIRAÇU", "PERSEU", "DRAKON"];
 
-export type TableType = "ranking" | "matches" | "medals";
+export type TableType = "ranking" | "ranking_time" | "ranking_mark" | "ranking_points" | "matches" | "matches_sets" | "medals";
 
 export interface SportEvent {
   id: string;
@@ -93,7 +91,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
     icon: "https://scaer.com.br/wp-content/uploads/2025/07/bkb.png",
     url: "https://script.google.com/macros/s/AKfycbwRgr8UWVd0plX2seoRdbGuLlhOpKP8H7OxV0mFs23BFXW0x6CHaunV4cJXPC4XLMxDEQ/exec",
     events: [
-      { id: "basquete", name: "Partidas", tableType: "matches" }
+      { id: "basquete", name: "Partidas", tableType: "matches_sets" }
     ]
   },
   {
@@ -227,7 +225,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
     icon: "https://scaer.com.br/wp-content/uploads/2025/07/vvo.png",
     url: "https://script.google.com/macros/s/AKfycbxEOhlppGhGCZxkgKLzMTvnkl_vkNjbnmFJ2R3fUx0496KxZv2ILQX_SQ8ztSGqhwGO0A/exec",
     events: [
-      { id: "volei", name: "Partidas", tableType: "matches" }
+      { id: "volei", name: "Partidas", tableType: "matches_sets" }
     ]
   },
   {
@@ -236,8 +234,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
     icon: "https://scaer.com.br/wp-content/uploads/2025/07/clb.png",
     url: "",
     events: [
-      { id: "speed-masc", name: "Speed Masculino", tableType: "ranking" },
-      { id: "speed-fem", name: "Speed Feminino", tableType: "ranking" },
+
       { id: "GERAL", name: "Geral", tableType: "ranking" }
     ]
   }

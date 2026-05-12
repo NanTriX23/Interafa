@@ -25,6 +25,12 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
   };
 
   const renderRankingTable = () => {
+    const colLabel =
+      currentEvent?.tableType === 'ranking_time'   ? 'Tempo' :
+      currentEvent?.tableType === 'ranking_mark'   ? 'Marca' :
+      currentEvent?.tableType === 'ranking_points' ? 'Pontos' :
+      'Tempo / Marca';
+
     return (
       <table className="results-table">
         <thead>
@@ -34,7 +40,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
           <tr>
             <th>Posição</th>
             <th>Atleta</th>
-            <th>Tempo / Marca</th>
+            <th>{colLabel}</th>
             <th>Equipe</th>
           </tr>
         </thead>
@@ -96,6 +102,67 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
               </td>
               <td className="score-cell">
                 {item.score1} x {item.score2}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
+  const renderMatchesSetsTable = () => {
+    const pLabel = sport.id === 'basquete' ? 'Q' : 'S';
+    return (
+      <table className="results-table">
+        <thead>
+          <tr>
+            <th colSpan={7}>Partidas — {currentEvent?.name}</th>
+          </tr>
+          <tr>
+            <th>Jogo</th>
+            <th>Equipe 1</th>
+            <th>{pLabel}1</th>
+            <th>{pLabel}2</th>
+            <th>{pLabel}3</th>
+            <th>{pLabel}4</th>
+            <th>Equipe 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((item, index) => (
+            <tr key={index}>
+              <td className="match-number" style={{ fontWeight: 'bold' }}>{item.match_number}</td>
+              <td>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                  {getTeamImage(item.team1)
+                    ? <img src={getTeamImage(item.team1)} alt={item.team1} style={{ height: '36px' }} />
+                    : <span>{item.team1}</span>}
+                  <span style={{ fontSize: '22px', fontWeight: 'bold' }}>{item.score1}</span>
+                </div>
+              </td>
+              {[1, 2, 3, 4].map(s => {
+                const s1 = item[`set${s}_score1`] ?? 0;
+                const s2 = item[`set${s}_score2`] ?? 0;
+                const played = s1 > 0 || s2 > 0;
+                return (
+                  <td key={s} style={{ textAlign: 'center', fontSize: '14px' }}>
+                    {played ? (
+                      <>
+                        <span style={{ color: s1 > s2 ? '#4ade80' : 'white', fontWeight: s1 > s2 ? 'bold' : 'normal' }}>{s1}</span>
+                        <span style={{ color: '#888', margin: '0 3px' }}>-</span>
+                        <span style={{ color: s2 > s1 ? '#4ade80' : 'white', fontWeight: s2 > s1 ? 'bold' : 'normal' }}>{s2}</span>
+                      </>
+                    ) : <span style={{ color: '#444' }}>—</span>}
+                  </td>
+                );
+              })}
+              <td>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                  {getTeamImage(item.team2)
+                    ? <img src={getTeamImage(item.team2)} alt={item.team2} style={{ height: '36px' }} />
+                    : <span>{item.team2}</span>}
+                  <span style={{ fontSize: '22px', fontWeight: 'bold' }}>{item.score2}</span>
+                </div>
               </td>
             </tr>
           ))}
@@ -226,7 +293,8 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
       ) : (
         <div className="table-container">
           {currentEvent?.tableType === 'matches' && renderMatchesTable()}
-          {currentEvent?.tableType === 'ranking' && renderRankingTable()}
+          {currentEvent?.tableType === 'matches_sets' && renderMatchesSetsTable()}
+          {currentEvent?.tableType?.startsWith('ranking') && renderRankingTable()}
           {currentEvent?.tableType === 'medals' && renderMedalsTable()}
         </div>
       )}
