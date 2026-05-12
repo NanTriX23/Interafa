@@ -51,7 +51,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "atletismo",
     name: "Atletismo",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/ChatGPT-Image-15-de-jul.-de-2025-14_26_32-1.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/ath.png",
     url: "https://script.google.com/macros/s/AKfycbyMjdH28bWj3thrN2Jlw4QAmDV_kuMqGjn5NpATUDS1pD2139ckI81SfZA6gmjUpLJfVg/exec",
     events: [
       { id: "100mMASC", name: "100m MASC", tableType: "ranking" },
@@ -107,7 +107,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "judo",
     name: "Judô",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/ChatGPT-Image-15-de-jul.-de-2025-14_26_32-1.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/jud.png",
     url: "https://script.google.com/macros/s/AKfycbw2UC7MrAdT73C6Zk6bE9jEiwuEKm94I52UcNceo9QbadNrRBPrwwH6h__MdQHVYLTqDA/exec",
     events: [
       { id: "ligeiro", name: "Ligeiro", tableType: "matches" },
@@ -161,7 +161,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "pentatlo",
     name: "Pentatlo",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/ChatGPT-Image-15-de-jul.-de-2025-14_26_32-1.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/mpn.png",
     url: "https://script.google.com/macros/s/AKfycbwQHydiGtkQgKQIShys73GBIgm8cULESubEJe1Vj-avtBICcJfVZEz1FkfLpzw4tInSfg/exec",
     events: [
       { id: "esgrima", name: "Esgrima", tableType: "ranking" },
@@ -174,7 +174,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "polo",
     name: "Polo Aquático",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/vvo.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/wpo.png",
     url: "https://script.google.com/macros/s/AKfycbxplaXp_QkqPO6vLBMoXkBdfELJLM1L3BInY_Kojgrzu7MNoJ4OodMc6_1qf9ardak/exec",
     events: [
       { id: "polo", name: "Partidas", tableType: "matches" }
@@ -183,7 +183,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "tiro",
     name: "Tiro",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/ChatGPT-Image-15-de-jul.-de-2025-14_26_32-1.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/sho.png",
     url: "https://script.google.com/macros/s/AKfycbxEOhlppGhGCZxkgKLzMTvnkl_vkNjbnmFJ2R3fUx0496KxZv2ILQX_SQ8ztSGqhwGO0A/exec",
     events: [
       { id: "pistola-ar", name: "Pistola de Ar", tableType: "ranking" },
@@ -195,7 +195,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "triathlon",
     name: "Triathlon",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/ChatGPT-Image-15-de-jul.-de-2025-14_26_32-1.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/tri.png",
     url: "https://script.google.com/macros/s/AKfycbwUUArVYUalO2H736WESs1D985lGMU7TmPJiPt9ZuFi5_l5rH4heaxBnIge2QtpXggA0Q/exec",
     events: [
       { id: "sprint", name: "Sprint", tableType: "ranking" },
