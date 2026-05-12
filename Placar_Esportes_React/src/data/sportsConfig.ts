@@ -180,10 +180,11 @@ export const SPORTS_CONFIG: SportConfig[] = [
     icon: "https://scaer.com.br/wp-content/uploads/2025/07/mpn.png",
     url: "https://script.google.com/macros/s/AKfycbwQHydiGtkQgKQIShys73GBIgm8cULESubEJe1Vj-avtBICcJfVZEz1FkfLpzw4tInSfg/exec",
     events: [
-      { id: "esgrima", name: "Esgrima", tableType: "ranking" },
-      { id: "natacao", name: "Natação", tableType: "ranking" },
-      { id: "hipismo", name: "Hipismo", tableType: "ranking" },
-      { id: "laser-run", name: "Laser-Run", tableType: "ranking" },
+      { id: "ppm", name: "Pista de Pentatlo Militar", tableType: "ranking" },
+      { id: "natacao-utilitaria", name: "Natação Utilitária", tableType: "ranking" },
+      { id: "lancamento-de-granada", name: "Lançamento de Granada", tableType: "ranking" },
+      { id: "tiro", name: "Tiro", tableType: "ranking" },
+      { id: "cross-country", name: "Cross Country", tableType: "ranking" },
       { id: "GERAL", name: "Geral (Pontuação Total)", tableType: "ranking" }
     ]
   },
