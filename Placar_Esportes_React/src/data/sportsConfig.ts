@@ -41,7 +41,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "geral",
     name: "Quadro Geral de Medalhas",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/ChatGPT-Image-15-de-jul.-de-2025-14_26_32-1.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/11/ChatGPT_Image_26_de_nov._de_2025__10_39_25-removebg-preview.png",
     url: "https://script.google.com/macros/s/AKfycbzi_Q0LlUmy9L2N5RTd01dgXja84lKOOEriq7R69hxdMkwLwgZGViIbYGEYKJaI8vD-nQ/exec",
     events: [
       { id: "quadrogeral", name: "Quadro de Medalhas", tableType: "medals" },
@@ -89,7 +89,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "basquete",
     name: "Basquete",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/vvo.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/bkb.png",
     url: "https://script.google.com/macros/s/AKfycbwRgr8UWVd0plX2seoRdbGuLlhOpKP8H7OxV0mFs23BFXW0x6CHaunV4cJXPC4XLMxDEQ/exec",
     events: [
       { id: "basquete", name: "Partidas", tableType: "matches" }
@@ -98,7 +98,7 @@ export const SPORTS_CONFIG: SportConfig[] = [
   {
     id: "futebol",
     name: "Futebol",
-    icon: "https://scaer.com.br/wp-content/uploads/2025/07/vvo.png",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/fbl.png",
     url: "https://script.google.com/macros/s/AKfycbwtbBVunCtwJ4rPgQAaUwE6XBul0Zqt7xkYOi6X_qcfo_3HERKw3wtlUO4VgBWY-1XeDQ/exec",
     events: [
       { id: "futebol", name: "Partidas", tableType: "matches" }
