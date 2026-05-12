@@ -20,6 +20,7 @@ export const TEAM_GRADIENTS: { [key: string]: string } = {
 };
 
 export const AVAILABLE_TEAMS = ["", "ATHOS", "UIRAÇU", "PERSEU", "DRAKON", "AMAN", "AFA", "EN"];
+export const GENERAL_TEAMS = ["ATHOS", "UIRAÇU", "PERSEU", "DRAKON"];
 
 export type TableType = "ranking" | "matches" | "medals";
 
