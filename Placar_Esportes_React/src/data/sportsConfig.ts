@@ -121,6 +121,21 @@ export const SPORTS_CONFIG: SportConfig[] = [
     ]
   },
   {
+    id: "esgrima",
+    name: "Esgrima",
+    icon: "https://scaer.com.br/wp-content/uploads/2025/07/fen.png",
+    url: "",
+    events: [
+      { id: "florete-masc", name: "Florete Masculino", tableType: "matches" },
+      { id: "florete-fem", name: "Florete Feminino", tableType: "matches" },
+      { id: "espada-masc", name: "Espada Masculino", tableType: "matches" },
+      { id: "espada-fem", name: "Espada Feminino", tableType: "matches" },
+      { id: "sabre-masc", name: "Sabre Masculino", tableType: "matches" },
+      { id: "sabre-fem", name: "Sabre Feminino", tableType: "matches" },
+      { id: "absoluto", name: "Absoluto", tableType: "matches" }
+    ]
+  },
+  {
     id: "natacao",
     name: "Natação",
     icon: "https://scaer.com.br/wp-content/uploads/2025/07/swm.png",
