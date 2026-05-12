@@ -1,0 +1,621 @@
+<!-- QUADRO GERAL -->
+<section id="quadro-geral">
+  <style>
+    .geral-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 12px 40px;
+      font-family: "Bebas Neue", sans-serif;
+    }
+
+    /* Contêiner para tornar a tabela rolável no mobile */
+    .geral-table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .geral-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: #fff;
+    }
+
+    .geral-table thead tr {
+      background: #071c1f;
+      color: #fff;
+    }
+
+    .geral-table th,
+    .geral-table td {
+      text-align: center;
+      padding: 16px 8px;
+      border-bottom: 1px solid #eee;
+      font-size: 18px;
+      white-space: nowrap; /* evita quebrar feio no mobile */
+    }
+
+    .geral-table thead th:first-child {
+      font-size: 28px;
+      text-align: left;
+      padding-left: 24px;
+      white-space: nowrap;
+    }
+
+    /* Cabeçalho dos esportes – texto na vertical */
+    .sport-header {
+      padding: 0;
+      width: 40px;
+    }
+
+    .sport-header span {
+      display: inline-block;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      transform-origin: center;
+      letter-spacing: 2px;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    /* Bolachas das equipes */
+    .geral-table td img {
+      height: 70px;
+    }
+
+    .geral-table tbody tr:nth-child(even) {
+      background: #f7f7f7;
+    }
+
+    /* aumenta o tamanho das medalhas dentro da tabela geral */
+    .geral-table td.medalha {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    /* -------- PÓDIO GERAL -------- */
+
+    .podium-title {
+      margin-top: 32px;
+      font-size: 28px;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 40px;
+      margin: 30px auto 10px;
+      max-width: 800px;
+    }
+
+    .podium-place {
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .podium-place img {
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .podium-block {
+      width: 140px;
+      border-radius: 18px 18px 0 0;
+      background: #071c1f;
+      color: #fff;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 10px;
+      font-size: 24px;
+    }
+
+    .podium-block span {
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+
+    .podium-first .podium-block {
+      height: 130px;
+    }
+    .podium-second .podium-block {
+      height: 100px;
+    }
+    .podium-third .podium-block {
+      height: 80px;
+    }
+
+    .podium-label {
+      margin-top: 6px;
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* -------- PÓDIOS POR ESPORTE -------- */
+
+    .podios-esportes-titulo {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 28px;
+      letter-spacing: 2px;
+    }
+
+    .podios-grid {
+      max-width: 1200px;
+      margin: 20px auto 40px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .podio-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      padding: 16px 12px 20px;
+      text-align: center;
+      font-family: "Bebas Neue", sans-serif;
+    }
+
+    .podio-esporte-nome {
+      font-size: 20px;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .podio-colunas {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .podio-place {
+      width: 70px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .podio-place img {
+      height: 55px;
+      margin-bottom: 4px;
+    }
+
+    .podio-bloco {
+      border-radius: 12px 12px 0 0;
+      background: #071c1f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .podio-first .podio-bloco {
+      height: 70px;
+    }
+    .podio-second .podio-bloco {
+      height: 55px;
+    }
+    .podio-third .podio-bloco {
+      height: 45px;
+    }
+
+    .podio-legenda {
+      margin-top: 4px;
+      font-size: 16px;
+    }
+
+    /* -------- CORES POR EQUIPE (pódios) -------- */
+    .podio-cor-perseu {
+      background: linear-gradient(180deg, #2b7bff, #004aad);
+      color: #ffffff;
+    }
+
+    .podio-cor-uiracu {
+      background: linear-gradient(180deg, #ff4b4b, #b30000);
+      color: #ffffff;
+    }
+
+    .podio-cor-athos {
+      background: linear-gradient(180deg, #ffe066, #ffb300);
+      color: #000000;
+    }
+
+    .podio-cor-artemis {
+      background: linear-gradient(180deg, #00c853, #00701a);
+      color: #ffffff;
+    }
+
+    /* ====== RESPONSIVO ====== */
+
+    /* Tablet / telas médias */
+    @media (max-width: 900px) {
+      .geral-wrapper {
+        padding: 20px 10px 32px;
+      }
+
+      .geral-table th,
+      .geral-table td {
+        padding: 10px 6px;
+        font-size: 14px;
+      }
+
+      .geral-table thead th:first-child {
+        font-size: 22px;
+        padding-left: 12px;
+      }
+
+      .geral-table td img {
+        width: 70px;
+        height: auto;
+        object-fit: contain;
+      }
+
+      @media (max-width: 600px) {
+        .geral-table td img {
+          width: 55px;
+        }
+      }
+
+      .geral-table td.medalha {
+        font-size: 26px;
+      }
+
+      .podium {
+        gap: 24px;
+        max-width: 100%;
+      }
+
+      .podios-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* Celular */
+    @media (max-width: 600px) {
+      .geral-wrapper {
+        padding: 16px 8px 28px;
+      }
+
+      .geral-table th,
+      .geral-table td {
+        padding: 8px 4px;
+        font-size: 12px;
+      }
+
+      .geral-table thead th:first-child {
+        font-size: 18px;
+        padding-left: 8px;
+      }
+
+      .geral-table td img {
+        height: 48px;
+      }
+
+      .geral-table td.medalha {
+        font-size: 22px;
+      }
+
+      .sport-header {
+        width: 32px;
+      }
+
+      .sport-header span {
+        font-size: 12px;
+        letter-spacing: 1px;
+      }
+
+      .podium-title,
+      .podios-esportes-titulo {
+        font-size: 22px;
+      }
+
+      .podium {
+        gap: 16px;
+        padding: 0 8px;
+      }
+
+      .podium-place img {
+        height: 60px;
+      }
+
+      .podium-block {
+        width: 100px;
+        font-size: 18px;
+      }
+
+      .podium-label {
+        font-size: 16px;
+      }
+
+      .podios-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="geral-wrapper">
+    <!-- TABELA PRINCIPAL -->
+    <div class="geral-table-container">
+      <table class="geral-table">
+        <thead>
+          <tr>
+            <th>Equipe</th>
+
+            <!-- 12 esportes, texto na vertical -->
+            <th class="sport-header"><span>Atletismo</span></th>
+            <th class="sport-header"><span>Basquete</span></th>
+            <th class="sport-header"><span>Esgrima</span></th>
+            <th class="sport-header"><span>Futebol</span></th>
+            <th class="sport-header"><span>Judô</span></th>
+            <th class="sport-header"><span>Natação</span></th>
+            <th class="sport-header"><span>Orientação</span></th>
+            <th class="sport-header"><span>Pentatlo Militar</span></th>
+            <th class="sport-header"><span>Polo Aquático</span></th>
+            <th class="sport-header"><span>Tiro Esportivo</span></th>
+            <th class="sport-header"><span>Triathlon</span></th>
+            <th class="sport-header"><span>Voleibol</span></th>
+
+            <th style="font-size: 12px">Total&nbsp;Pontos</th>
+          </tr>
+        </thead>
+
+        <tbody id="tabela-geral-body">
+          <!-- preenchido via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PÓDIOS POR ESPORTE -->
+    <h3 class="podios-esportes-titulo">Pódios por Esporte</h3>
+    <div id="podios-esportes" class="podios-grid"></div>
+
+    <!-- PÓDIO GERAL -->
+    <h3 class="podium-title">Pódio Geral</h3>
+    <div class="podium" id="podium-geral"></div>
+  </div>
+
+  <script>
+    const URL_WEBAPP =
+      "https://script.google.com/macros/s/AKfycbzi_Q0LlUmy9L2N5RTd01dgXja84lKOOEriq7R69hxdMkwLwgZGViIbYGEYKJaI8vD-nQ/exec";
+
+    function pontosPorPosicao(valor) {
+      if (!valor) return 0;
+      const n = parseInt(String(valor), 10);
+      if (n === 1) return 4;
+      if (n === 2) return 3;
+      if (n === 3) return 2;
+      if (n === 4) return 1;
+      return 0;
+    }
+
+    function posicaoParaMedalha(valor) {
+      if (!valor) return "-";
+      const s = String(valor).trim();
+      if (s.startsWith("1")) return "🥇";
+      if (s.startsWith("2")) return "🥈";
+      if (s.startsWith("3")) return "🥉";
+      return "-";
+    }
+
+    function classeCorPorEquipe(nome) {
+      let s = (nome || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+      if (s.includes("perseu")) return "podio-cor-perseu";
+      if (s.includes("athos")) return "podio-cor-athos";
+      if (s.includes("uiracu") || s.includes("uira")) return "podio-cor-uiracu";
+      if (s.includes("artemis")) return "podio-cor-artemis";
+
+      return "";
+    }
+
+    async function carregarQuadroGeral() {
+      try {
+        const resp = await fetch(`${URL_WEBAPP}?tipo=quadrogeral`, {
+          cache: "no-cache",
+        });
+        const dados = await resp.json();
+        montarTabelaGeral(dados);
+      } catch (erro) {
+        console.error("Erro ao carregar quadro geral:", erro);
+      }
+    }
+
+    function montarTabelaGeral(dados) {
+      const tbody = document.getElementById("tabela-geral-body");
+      if (!tbody || !dados || !dados.equipes) return;
+
+      tbody.innerHTML = "";
+
+      const ranking = [];
+
+      dados.equipes.forEach((equipeObj) => {
+        let totalPontos = 0;
+
+        equipeObj.resultados.forEach((pos) => {
+          totalPontos += pontosPorPosicao(pos);
+        });
+
+        ranking.push({
+          equipe: equipeObj.equipe,
+          escudo: equipeObj.escudo,
+          resultados: equipeObj.resultados,
+          total: totalPontos,
+        });
+
+        const tr = document.createElement("tr");
+
+        const tdEquipe = document.createElement("td");
+        const img = document.createElement("img");
+        img.src = equipeObj.escudo;
+        img.alt = equipeObj.equipe;
+        img.style.height = "70px";
+        tdEquipe.appendChild(img);
+        tr.appendChild(tdEquipe);
+
+        equipeObj.resultados.forEach((pos) => {
+          const td = document.createElement("td");
+          td.classList.add("medalha");
+          td.textContent = posicaoParaMedalha(pos);
+          tr.appendChild(td);
+        });
+
+        const tdTotal = document.createElement("td");
+        tdTotal.textContent = totalPontos;
+        tr.appendChild(tdTotal);
+
+        tbody.appendChild(tr);
+      });
+
+      montarPodioGeral(ranking);
+    }
+
+    function montarPodioGeral(ranking) {
+      const container = document.getElementById("podium-geral");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const ordenado = ranking
+        .slice()
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 3);
+
+      const ordem = [1, 0, 2];
+
+      ordem.forEach((idx) => {
+        const dado = ordenado[idx];
+        if (!dado) return;
+
+        let classePos;
+        let textoPos;
+        if (idx === 0) {
+          classePos = "podium-place podium-first";
+          textoPos = "1º Lugar";
+        } else if (idx === 1) {
+          classePos = "podium-place podium-second";
+          textoPos = "2º Lugar";
+        } else {
+          classePos = "podium-place podium-third";
+          textoPos = "3º Lugar";
+        }
+
+        const place = document.createElement("div");
+        place.className = classePos;
+
+        const img = document.createElement("img");
+        img.src = dado.escudo;
+        img.alt = dado.equipe;
+        place.appendChild(img);
+
+        const bloco = document.createElement("div");
+        bloco.className = "podium-block " + classeCorPorEquipe(dado.equipe);
+        const span = document.createElement("span");
+        span.textContent = textoPos;
+        bloco.appendChild(span);
+        place.appendChild(bloco);
+
+        const label = document.createElement("div");
+        label.className = "podium-label";
+        label.textContent = `${dado.equipe} (${dado.total} pts)`;
+        place.appendChild(label);
+
+        container.appendChild(place);
+      });
+    }
+
+    async function carregarPodiosPorEsporte() {
+      try {
+        const resp = await fetch(`${URL_WEBAPP}?tipo=podios`, {
+          cache: "no-cache",
+        });
+        const dados = await resp.json();
+        montarPodios(dados);
+      } catch (erro) {
+        console.error("Erro ao carregar pódios por esporte:", erro);
+      }
+    }
+
+    function montarPodios(dados) {
+      const container = document.getElementById("podios-esportes");
+      if (!container) return;
+      container.innerHTML = "";
+
+      dados.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "podio-card";
+
+        const titulo = document.createElement("div");
+        titulo.className = "podio-esporte-nome";
+        titulo.textContent = item.esporte;
+        card.appendChild(titulo);
+
+        const colunas = document.createElement("div");
+        colunas.className = "podio-colunas";
+
+        const ordemDesejada = [2, 1, 3];
+
+        ordemDesejada.forEach((posDesejada) => {
+          const dadosLugar = item.podium.find(
+            (p) => Number(p.posicao) === posDesejada
+          );
+          if (!dadosLugar) return;
+
+          const lugarDiv = document.createElement("div");
+          lugarDiv.className =
+            "podio-place " +
+            (posDesejada === 1
+              ? "podio-first"
+              : posDesejada === 2
+              ? "podio-second"
+              : "podio-third");
+
+          const img = document.createElement("img");
+          img.src = dadosLugar.escudo;
+          img.alt = dadosLugar.equipe;
+          lugarDiv.appendChild(img);
+
+          const bloco = document.createElement("div");
+          bloco.className =
+            "podio-bloco " + classeCorPorEquipe(dadosLugar.equipe);
+          bloco.innerHTML = posDesejada + "º";
+          lugarDiv.appendChild(bloco);
+
+          const legenda = document.createElement("div");
+          legenda.className = "podio-legenda";
+
+          if (
+            dadosLugar.pontos !== undefined &&
+            dadosLugar.pontos !== null &&
+            dadosLugar.pontos !== ""
+          ) {
+            legenda.textContent = `${dadosLugar.equipe} (${dadosLugar.pontos} pts)`;
+          } else {
+            legenda.textContent = dadosLugar.equipe;
+          }
+
+          lugarDiv.appendChild(legenda);
+
+          colunas.appendChild(lugarDiv);
+        });
+
+        card.appendChild(colunas);
+        container.appendChild(card);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      carregarQuadroGeral();
+      carregarPodiosPorEsporte();
+    });
+  </script>
+</section>

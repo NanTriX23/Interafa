@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pentatlo Militar - Resultados</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Bebas Neue", sans-serif;
+        margin: 0;
+        background: #f4f4f4;
+        color: #333;
+        padding: 30px 20px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .header img {
+        width: 60px;
+        height: 60px;
+      }
+      .header h1 {
+        font-size: 40px;
+        letter-spacing: 2px;
+      }
+
+      .results-table {
+        width: 100%;
+        max-width: 1000px;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      .results-table th,
+      .results-table td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+      .results-table th {
+        background: #122;
+        color: white;
+      }
+      .results-table tr:hover {
+        background: #f0f0f0;
+      }
+      .results-table td img {
+        height: 44px;
+      }
+
+      .view-switch {
+        max-width: 1000px;
+        margin: 24px auto 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+      .view-switch button {
+        font-family: "Bebas Neue", sans-serif;
+        letter-spacing: 0.5px;
+        font-size: 18px;
+        padding: 10px 16px;
+        border: 1px solid #122;
+        background: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.05s ease, background 0.2s ease, color 0.2s ease;
+      }
+      .view-switch button:hover {
+        transform: translateY(-1px);
+      }
+      .view-switch button.active {
+        background: #122;
+        color: #fff;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .gallery {
+        max-width: 900px;
+        margin: 40px auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+      }
+      .gallery img {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+      }
+      .gallery img:hover {
+        transform: scale(1.05);
+      }
+
+      .back-button{
+      display:block; width:max-content; margin:40px auto 0; padding:12px 24px;
+      color:white; text-decoration:none; border-radius:8px; 
+    }
+    .back-button:hover{ background:#244; }
+    </style>
+  </head>
+
+  <body>
+    <!-- Título -->
+    <div class="header">
+      <img
+        src="https://scaer.com.br/wp-content/uploads/2025/07/mpn.png"
+        alt="Ícone Pentatlo"
+      />
+      <h1>Pentatlo Militar - Resultados</h1>
+    </div>
+
+    <!-- Botões de navegação -->
+    <div class="view-switch" aria-label="Selecionar prova">
+      <button class="active" data-target="view-tiro-equipes">
+       Ind Geral MASC
+      </button>
+      <button data-target="view-tiro-equipes-FEM">Ind Geral FEM</button>
+
+      <button data-target="view-tiro-masc">Tiro - Masc</button>
+      <button data-target="view-tiro-fem">Tiro - Fem</button>
+     
+
+      <button data-target="view-ppm-masc">PPM - Masc</button>
+      <button data-target="view-ppm-fem">PPM - Fem</button>
+      
+
+      <button data-target="view-pnu-masc">PNU - Masc</button>
+      <button data-target="view-pnu-fem">PNU - Fem</button>
+     
+
+      <button data-target="view-gnd-masc">Granada - Masc</button>
+      <button data-target="view-gnd-fem">Granada - Fem</button>
+      <button data-target="view-gnd-avulso">Cross Country - MASC</button>
+      <button data-target="view-gnd-fem-avulso">Cross Country - FEM</button>
+    </div>
+
+    <!-- ========= TABELAS (sem dados, serão preenchidas via JS) ========= -->
+
+    <!-- Equipes Masculino -->
+    <section id="view-tiro-equipes">
+      <table class="results-table" id="tabela-tiro-equipes-masc">
+        <tr>
+          <th colspan="4">Final Individual Masculino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Equipes Feminino -->
+    <section id="view-tiro-equipes-FEM" class="hidden">
+      <table class="results-table" id="tabela-tiro-equipes-fem">
+        <tr>
+          <th colspan="4">Final Individual Feminino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Tiro Masc -->
+    <section id="view-tiro-masc" class="hidden">
+      <table class="results-table" id="tabela-tiro-masc">
+        <tr>
+          <th colspan="4">Tiro – Masculino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Tiro Fem -->
+    <section id="view-tiro-fem" class="hidden">
+      <table class="results-table" id="tabela-tiro-fem">
+        <tr>
+          <th colspan="4">Tiro – Feminino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Tiro Masc Avulso -->
+    <section id="view-tiro-avulso" class="hidden">
+      <table class="results-table" id="tabela-tiro-masc-avulso">
+        <tr>
+          <th colspan="4">Tiro – Masculino Avulso</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Tiro Fem Avulso -->
+    <section id="view-tiro-avulso-fem" class="hidden">
+      <table class="results-table" id="tabela-tiro-fem-avulso">
+        <tr>
+          <th colspan="4">Tiro – Feminino Avulso</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- PPM Masc -->
+    <section id="view-ppm-masc" class="hidden">
+      <table class="results-table" id="tabela-ppm-masc">
+        <tr>
+          <th colspan="5">PPM – Masculino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Marca</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- PPM Fem -->
+    <section id="view-ppm-fem" class="hidden">
+      <table class="results-table" id="tabela-ppm-fem">
+        <tr>
+          <th colspan="5">PPM – Feminino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Marca</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- PPM Masc Avulso -->
+    <section id="view-ppm-avulso" class="hidden">
+      <table class="results-table" id="tabela-ppm-masc-avulso">
+        <tr>
+          <th colspan="5">PPM – Masculino Avulso</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Marca</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- PPM Fem Avulso -->
+    <section id="view-ppm-fem-avulso" class="hidden">
+      <table class="results-table" id="tabela-ppm-fem-avulso">
+        <tr>
+          <th colspan="5">PPM – Feminino Avulso</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Marca</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- PNU Masc -->
+    <section id="view-pnu-masc" class="hidden">
+      <table class="results-table" id="tabela-pnu-masc">
+        <tr>
+          <th colspan="5">Natação Utilitária – Masculino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Marca</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- PNU Fem -->
+    <section id="view-pnu-fem" class="hidden">
+      <table class="results-table" id="tabela-pnu-fem">
+        <tr>
+          <th colspan="5">Natação Utilitária – Feminino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Marca</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- PNU Masc Avulso -->
+    <section id="view-pnu-avulso" class="hidden">
+      <table class="results-table" id="tabela-pnu-masc-avulso">
+        <tr>
+          <th colspan="5">Natação Utilitária – Masculino Avulso</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Marca</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- PNU Fem Avulso -->
+    <section id="view-pnu-fem-avulso" class="hidden">
+      <table class="results-table" id="tabela-pnu-fem-avulso">
+        <tr>
+          <th colspan="5">Natação Utilitária – Feminino Avulso</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Marca</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Granada Masc -->
+    <section id="view-gnd-masc" class="hidden">
+      <table class="results-table" id="tabela-gnd-masc">
+        <tr>
+          <th colspan="4">Granada – Masculino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Granada Fem -->
+    <section id="view-gnd-fem" class="hidden">
+      <table class="results-table" id="tabela-gnd-fem">
+        <tr>
+          <th colspan="4">Granada – Feminino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Granada Masc Avulso -->
+    <section id="view-gnd-avulso" class="hidden">
+      <table class="results-table" id="tabela-gnd-masc-avulso">
+        <tr>
+          <th colspan="4">Cross Country - Masculino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Granada Fem Avulso -->
+    <section id="view-gnd-fem-avulso" class="hidden">
+      <table class="results-table" id="tabela-gnd-fem-avulso">
+        <tr>
+          <th colspan="4">Cross Country - Feminino</th>
+        </tr>
+        <tr>
+          <th>Posição</th>
+          <th>Atleta</th>
+          <th>Equipe</th>
+          <th>Pontos</th>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Galeria (se quiser preencher depois) -->
+    <div class="gallery">
+      <img
+        src="https://scaer.com.br/wp-content/uploads/2025/11/IMG_8467.jpg"
+        alt="Prova 1"
+      />
+      <img src="https://scaer.com.br/wp-content/uploads/2025/11/IMG_8509.jpg" alt="Prova 2" />
+      <img src="https://scaer.com.br/wp-content/uploads/2025/11/IMG_2122.jpg" alt="Premiação" />
+      <img src="https://scaer.com.br/wp-content/uploads/2025/11/IMG_2305.jpg" alt="Prova 2" />
+      <!--<img src="" alt="Premiação" />
+      <img src="" alt="Premiação" />
+    </div>
+    -->
+
+     <!-- Botão voltar -->
+    <a href="https://scaer.com.br/esportes-2/" class="back-button"
+      >← Voltar aos esportes</a
+    >
+
+    <!-- ================== SCRIPTS ================== -->
+    <!-- ================== SCRIPTS ================== -->
+    <script>
+      // === URL do Web App (mesma do resto do site) ===
+      const URL_PLANILHA =
+        "https://script.google.com/macros/s/AKfycbwQHydiGtkQgKQIShys73GBIgm8cULESubEJe1Vj-avtBICcJfVZEz1FkfLpzw4tInSfg/exec";
+
+      // Escudos das escolas/equipes (AMAN / AFA / EN)
+      const URL_IMAGENS_EQUIPE = {
+        AMAN: "https://scaer.com.br/wp-content/uploads/2025/08/AMAN.jpeg",
+        AFA: "https://scaer.com.br/wp-content/uploads/2025/08/AFA.webp",
+        EN: "https://scaer.com.br/wp-content/uploads/2025/08/EN.jpeg",
+      };
+
+      // Escudos por TURMA (Perseu, Uiraçu, etc.)
+      const URL_IMAGENS_TURMA = {
+        Perseu:
+          "https://scaer.com.br/wp-content/uploads/2025/06/2025-2029_Perseu_Destaque-removebg-preview-1.png",
+        Uiraçu:
+          "https://scaer.com.br/wp-content/uploads/2025/11/Uiracuremovido.png",
+        Athos:
+          "https://scaer.com.br/wp-content/uploads/2025/06/2023-2026_Athos_Destaque-fill-350x351-1.webp",
+        Ártemis:
+          "https://scaer.com.br/wp-content/uploads/2025/11/artemisremovido-.png",
+      };
+
+      // Degradês por TURMA (opcional – aplica no fundo da linha)
+      const GRADIENTES_TURMA = {
+        Perseu: "linear-gradient(90deg, #02091E, #12326F)",
+        Uiraçu: "linear-gradient(90deg, #3A0202, #FF301A)",
+        Athos: "linear-gradient(90deg, #3E2C00, #F4B000)",
+        Ártemis: "linear-gradient(90deg, #00331C, #00A86B)",
+      };
+
+      // Mapa das provas do Pentatlo (PRECISA bater com o Apps Script)
+      const MAPA_PENTATLO = {
+        // Equipes (EQ3)
+        FMASC: { id: "tabela-tiro-equipes-masc", tipo: "pontos" },
+        FFEM: { id: "tabela-tiro-equipes-fem", tipo: "pontos" },
+
+        // Tiro – IND4
+        TIRO_MASC: { id: "tabela-tiro-masc", tipo: "pontos" },
+        TIRO_FEM: { id: "tabela-tiro-fem", tipo: "pontos" },
+        TIRO_AV_MASC: { id: "tabela-tiro-masc-avulso", tipo: "pontos" },
+        TIRO_AV_FEM: { id: "tabela-tiro-fem-avulso", tipo: "pontos" },
+
+        // PPM – IND5
+        PPM_MASC: { id: "tabela-ppm-masc", tipo: "tempo" },
+        PPM_FEM: { id: "tabela-ppm-fem", tipo: "tempo" },
+        PPM_AV_MASC: { id: "tabela-ppm-masc-avulso", tipo: "tempo" },
+        PPM_AV_FEM: { id: "tabela-ppm-fem-avulso", tipo: "tempo" },
+
+        // PNU – IND5
+        PNU_MASC: { id: "tabela-pnu-masc", tipo: "tempo" },
+        PNU_FEM: { id: "tabela-pnu-fem", tipo: "tempo" },
+        PNU_AV_MASC: { id: "tabela-pnu-masc-avulso", tipo: "tempo" },
+        PNU_AV_FEM: { id: "tabela-pnu-fem-avulso", tipo: "tempo" },
+
+        // Granada – IND4
+        GND_MASC: { id: "tabela-gnd-masc", tipo: "pontos" },
+        GND_FEM: { id: "tabela-gnd-fem", tipo: "pontos" },
+        GND_AV_MASC: { id: "tabela-gnd-masc-avulso", tipo: "pontos" },
+        GND_AV_FEM: { id: "tabela-gnd-fem-avulso", tipo: "pontos" },
+      };
+
+      // Monta uma tabela com base no tipo de prova
+      function montarTabelaPentatlo(dados, idTabela, tipo) {
+        const tabela = document.getElementById(idTabela);
+        if (!tabela) return;
+
+        // Mantém só título + cabeçalho
+        while (tabela.rows.length > 2) {
+          tabela.deleteRow(2);
+        }
+
+        dados.forEach((item) => {
+          const tr = document.createElement("tr");
+
+          // Aplica gradiente se a "equipe" for uma turma conhecida
+          const grad = GRADIENTES_TURMA[item.equipe];
+          if (grad) {
+            tr.style.backgroundImage = grad;
+            tr.style.color = "white";
+          }
+
+          // primeira coluna: posição
+          const tdPos = document.createElement("td");
+          tdPos.textContent = item.posicao || item.pos || "";
+          tr.appendChild(tdPos);
+
+          // descobre a URL do escudo (turma > escola > vazio)
+          const urlEscudo =
+            URL_IMAGENS_TURMA[item.equipe] ||
+            URL_IMAGENS_EQUIPE[item.equipe] ||
+            "";
+
+          if (tipo === "equipes") {
+            // posição | equipe | pontos
+            const tdEq = document.createElement("td");
+            const img = document.createElement("img");
+            img.src = urlEscudo;
+            img.alt = item.equipe || "";
+            tdEq.appendChild(img);
+            tr.appendChild(tdEq);
+
+            const tdPts = document.createElement("td");
+            tdPts.textContent = item.pontos ?? "";
+            tr.appendChild(tdPts);
+          } else if (tipo === "pontos") {
+            // posição | atleta | equipe | pontos
+            const tdAt = document.createElement("td");
+            tdAt.textContent = item.atleta || "";
+            tr.appendChild(tdAt);
+
+            const tdEq = document.createElement("td");
+            const img = document.createElement("img");
+            img.src = urlEscudo;
+            img.alt = item.equipe || "";
+            tdEq.appendChild(img);
+            tr.appendChild(tdEq);
+
+            const tdPts = document.createElement("td");
+            tdPts.textContent = item.pontos ?? "";
+            tr.appendChild(tdPts);
+          } else if (tipo === "tempo") {
+            // posição | atleta | equipe | marca | pontos
+            const tdAt = document.createElement("td");
+            tdAt.textContent = item.atleta || "";
+            tr.appendChild(tdAt);
+
+            const tdEq = document.createElement("td");
+            const img = document.createElement("img");
+            img.src = urlEscudo;
+            img.alt = item.equipe || "";
+            tdEq.appendChild(img);
+            tr.appendChild(tdEq);
+
+            const tdMarca = document.createElement("td");
+            tdMarca.textContent = item.marca || "";
+            tr.appendChild(tdMarca);
+
+            const tdPts = document.createElement("td");
+            tdPts.textContent = item.pontos ?? "";
+            tr.appendChild(tdPts);
+          }
+
+          tabela.appendChild(tr);
+        });
+      }
+
+      async function carregarPentatlo() {
+        for (const [prova, cfg] of Object.entries(MAPA_PENTATLO)) {
+          try {
+            const resp = await fetch(
+              `${URL_PLANILHA}?prova=${encodeURIComponent(prova)}`,
+              { cache: "no-cache" }
+            );
+            const dados = await resp.json();
+            montarTabelaPentatlo(dados, cfg.id, cfg.tipo);
+          } catch (e) {
+            console.error("Erro carregando", prova, e);
+          }
+        }
+      }
+
+      // --- Script de troca de abas + carregar dados ---
+      document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll(".view-switch button");
+        const views = [
+          "view-tiro-equipes",
+          "view-tiro-equipes-FEM",
+          "view-tiro-masc",
+          "view-tiro-fem",
+         
+          
+          "view-ppm-masc",
+          "view-ppm-fem",
+          
+        
+          "view-pnu-masc",
+          "view-pnu-fem",
+          
+          
+          "view-gnd-masc",
+          "view-gnd-fem",
+          "view-gnd-avulso",
+          "view-gnd-fem-avulso",
+        ];
+
+        function showView(targetId) {
+          views.forEach((id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.toggle("hidden", id !== targetId);
+          });
+          buttons.forEach((b) => {
+            b.classList.toggle("active", b.dataset.target === targetId);
+          });
+        }
+
+        buttons.forEach((btn) =>
+          btn.addEventListener("click", () => showView(btn.dataset.target))
+        );
+
+        // Abre Equipes Masc ao carregar
+        showView("view-tiro-equipes");
+
+        // Busca dados no Apps Script
+        carregarPentatlo();
+      });
+    </script>
+  </body>
+</html>
