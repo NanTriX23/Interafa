@@ -3,7 +3,6 @@ import { TEAMS_IMAGES, TEAM_GRADIENTS, SPORTS_CONFIG, AVAILABLE_TEAMS } from '..
 import type { SportConfig } from '../data/sportsConfig';
 import { useSupabase } from '../hooks/useSupabase';
 import { useCustomEvents } from '../hooks/useCustomEvents';
-import { useStaticEventOverrides } from '../hooks/useStaticEventOverrides';
 
 interface ScoreboardProps {
   sport: SportConfig;
@@ -12,21 +11,14 @@ interface ScoreboardProps {
 
 export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
   const customEvents = useCustomEvents(sport.id);
-  const { overrides: staticOverrides } = useStaticEventOverrides(sport.id);
+  const allEvents = [...sport.events, ...customEvents];
 
-  // Apply static overrides to built-in events
-  const staticEvents = sport.events.map(ev => {
-    const ov = staticOverrides.get(ev.id);
-    return ov ? { ...ev, name: ov.name, tableType: ov.table_type as any } : ev;
-  });
-  const allEvents = [...staticEvents, ...customEvents];
-  
   const [activeEvent, setActiveEvent] = useState(allEvents[0]?.id || '');
-  // Always derive currentEvent reactively from the latest allEvents (includes overrides)
+  // Always derive currentEvent reactively from the latest allEvents
   const currentEvent = allEvents.find(e => e.id === activeEvent);
   // Derive tableType separately so useSupabase always gets the latest value
   const currentTableType = currentEvent?.tableType || 'rankings';
-  
+
   const { data, loading } = useSupabase(sport.id, activeEvent, currentTableType);
 
   
@@ -36,13 +28,12 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
   };
 
   const renderRankingTable = () => {
-    // Use currentTableType (always reactive to overrides) for the column label
-    const tt = currentEvent?.tableType ?? currentTableType;
+    const tt = currentTableType;
     const colLabel =
       tt === 'ranking_time'   ? 'Tempo' :
       tt === 'ranking_mark'   ? 'Marca' :
       tt === 'ranking_points' ? 'Pontos' :
-      'Tempo / Marca';
+      'Tempo / Marca / Pontos';
 
     return (
       <table className="results-table">
