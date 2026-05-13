@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { SPORTS_CONFIG, AVAILABLE_TEAMS } from '../data/sportsConfig';
 import { useSupabase } from '../hooks/useSupabase';
 import { useCustomEvents } from '../hooks/useCustomEvents';
+import { useStaticEventOverrides } from '../hooks/useStaticEventOverrides';
 import { supabase } from '../lib/supabase';
 
 export const AdminPanel = () => {
@@ -11,7 +12,14 @@ export const AdminPanel = () => {
   const [selectedEventId, setSelectedEventId] = useState(sport?.events[0]?.id || '');
   
   const customEvents = useCustomEvents(selectedSportId);
-  const allEvents = sport ? [...sport.events, ...customEvents] : [];
+  const { overrides: staticOverrides, refetch: refetchOverrides } = useStaticEventOverrides(selectedSportId);
+
+  // Apply static overrides to built-in events
+  const staticEvents = (sport?.events ?? []).map(ev => {
+    const ov = staticOverrides.get(ev.id);
+    return ov ? { ...ev, name: ov.name, tableType: ov.table_type as any } : ev;
+  });
+  const allEvents = [...staticEvents, ...customEvents];
   
   const currentEvent = allEvents.find(e => e.id === selectedEventId);
   const { data, loading } = useSupabase(selectedSportId, selectedEventId, currentEvent?.tableType || 'matches');
@@ -58,6 +66,42 @@ export const AdminPanel = () => {
     else if (selectedEventId === id) setSelectedEventId(sport?.events[0]?.id || '');
   };
   // ─────────────────────────────────────────────────────────────────────────
+
+  // ── Edit static (built-in) events ────────────────────────────────────────
+  const [editingStaticId, setEditingStaticId] = useState<string | null>(null);
+  const [editStaticForm, setEditStaticForm] = useState({ name: '', table_type: 'ranking' });
+
+  const startEditStatic = (ev: { id: string; name: string; tableType: string }) => {
+    setEditingStaticId(ev.id);
+    setEditStaticForm({ name: ev.name, table_type: ev.tableType });
+  };
+
+  const handleSaveStatic = async () => {
+    if (!editStaticForm.name) return alert('O nome não pode ser vazio');
+    const { error } = await supabase
+      .from('static_event_overrides')
+      .upsert(
+        { sport_id: selectedSportId, event_id: editingStaticId, name: editStaticForm.name, table_type: editStaticForm.table_type },
+        { onConflict: 'sport_id,event_id' }
+      );
+    if (error) alert('Erro ao salvar: ' + error.message);
+    else {
+      setEditingStaticId(null);
+      refetchOverrides();
+    }
+  };
+
+  const handleResetStatic = async (eventId: string) => {
+    if (!window.confirm('Restaurar o nome e tipo originais desta modalidade?')) return;
+    const { error } = await supabase
+      .from('static_event_overrides')
+      .delete()
+      .eq('sport_id', selectedSportId)
+      .eq('event_id', eventId);
+    if (error) alert('Erro ao restaurar: ' + error.message);
+    else refetchOverrides();
+  };
+  // ──────────────────────────────────────────────────────────────────────────
 
   // Forms states
   const [newMatch, setNewMatch] = useState({ match_number: 'Jogo 1', team1: '', team2: '' });
@@ -198,6 +242,87 @@ export const AdminPanel = () => {
           </button>
         </div>
       </div>
+
+      {/* MANAGE EXISTING STATIC MODALITIES */}
+      {staticEvents.length > 0 && (
+        <div style={{ background: '#111', color: 'white', padding: '15px', borderRadius: '10px', marginBottom: '12px', border: '1px solid #444' }}>
+          <h3 style={{ marginTop: 0, marginBottom: '4px' }}>🏷️ Modalidades Fixas — {sport?.name}</h3>
+          <p style={{ margin: '0 0 12px', fontSize: '12px', color: '#888' }}>Edite o nome ou o tipo de cabeçalho (Marca / Pontos / Tempo) das modalidades padrão.</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {staticEvents.map(ev => {
+              const hasOverride = staticOverrides.has(ev.id);
+              const originalEv = sport?.events.find(e => e.id === ev.id);
+              return (
+                <div key={ev.id} style={{ background: '#1a1a1a', borderRadius: '8px', padding: '10px 14px', border: editingStaticId === ev.id ? '1px solid #f59e0b' : '1px solid #2e2e2e' }}>
+                  {editingStaticId === ev.id ? (
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                      <input
+                        value={editStaticForm.name}
+                        onChange={e => setEditStaticForm({ ...editStaticForm, name: e.target.value })}
+                        style={{ padding: '6px 10px', borderRadius: '4px', flex: 1, minWidth: '160px', background: '#2a2a2a', color: 'white', border: '1px solid #555' }}
+                      />
+                      <select
+                        value={editStaticForm.table_type}
+                        onChange={e => setEditStaticForm({ ...editStaticForm, table_type: e.target.value })}
+                        style={{ padding: '6px', borderRadius: '4px', background: '#2a2a2a', color: 'white', border: '1px solid #555' }}
+                      >
+                        <option value="ranking_time">Ranking — Atleta / Equipe / Tempo</option>
+                        <option value="ranking_mark">Ranking — Atleta / Equipe / Marca</option>
+                        <option value="ranking_points">Ranking — Atleta / Equipe / Pontos</option>
+                        <option value="ranking">Ranking (genérico)</option>
+                        <option value="matches">Partidas (1x1)</option>
+                        <option value="matches_sets">Partidas com Sets/Quartos</option>
+                        <option value="medals">Medalhas / Colocações</option>
+                      </select>
+                      <button onClick={handleSaveStatic} style={{ background: '#f59e0b', padding: '6px 14px', borderRadius: '4px', border: 'none', color: '#000', fontWeight: 'bold', cursor: 'pointer' }}>
+                        Salvar
+                      </button>
+                      <button onClick={() => setEditingStaticId(null)} style={{ background: '#555', padding: '6px 12px', borderRadius: '4px', border: 'none', color: 'white', cursor: 'pointer' }}>
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                      <div>
+                        <span style={{ fontWeight: 'bold' }}>{ev.name}</span>
+                        {hasOverride && originalEv && originalEv.name !== ev.name && (
+                          <span style={{ marginLeft: '8px', fontSize: '10px', color: '#888', fontStyle: 'italic' }}>(original: {originalEv.name})</span>
+                        )}
+                        <span style={{ marginLeft: '10px', fontSize: '11px', background: '#2a2a2a', padding: '2px 8px', borderRadius: '20px', color: hasOverride ? '#f59e0b' : '#666' }}>
+                          {ev.tableType === 'ranking_time'   ? '⏱ Tempo' :
+                           ev.tableType === 'ranking_mark'   ? '📏 Marca' :
+                           ev.tableType === 'ranking_points' ? '🔢 Pontos' :
+                           ev.tableType === 'ranking'        ? '📊 Ranking' :
+                           ev.tableType === 'matches'        ? '⚔️ Partidas' :
+                           ev.tableType === 'matches_sets'   ? '⚔️ Partidas c/ Sets' : '🏅 Medalhas'}
+                          {hasOverride && ' ✎'}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                          onClick={() => startEditStatic(ev)}
+                          style={{ background: '#f59e0b', padding: '5px 12px', borderRadius: '4px', border: 'none', color: '#000', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}
+                        >
+                          ✏️ Editar
+                        </button>
+                        {hasOverride && (
+                          <button
+                            onClick={() => handleResetStatic(ev.id)}
+                            style={{ background: '#444', padding: '5px 10px', borderRadius: '4px', border: 'none', color: '#aaa', fontSize: '12px', cursor: 'pointer' }}
+                            title="Restaurar original"
+                          >
+                            ↩ Original
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* MANAGE EXISTING CUSTOM MODALITIES */}
       {customEvents.length > 0 && (

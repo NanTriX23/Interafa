@@ -3,6 +3,7 @@ import { TEAMS_IMAGES, TEAM_GRADIENTS, SPORTS_CONFIG, AVAILABLE_TEAMS } from '..
 import type { SportConfig } from '../data/sportsConfig';
 import { useSupabase } from '../hooks/useSupabase';
 import { useCustomEvents } from '../hooks/useCustomEvents';
+import { useStaticEventOverrides } from '../hooks/useStaticEventOverrides';
 
 interface ScoreboardProps {
   sport: SportConfig;
@@ -11,7 +12,14 @@ interface ScoreboardProps {
 
 export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
   const customEvents = useCustomEvents(sport.id);
-  const allEvents = [...sport.events, ...customEvents];
+  const { overrides: staticOverrides } = useStaticEventOverrides(sport.id);
+
+  // Apply static overrides to built-in events
+  const staticEvents = sport.events.map(ev => {
+    const ov = staticOverrides.get(ev.id);
+    return ov ? { ...ev, name: ov.name, tableType: ov.table_type as any } : ev;
+  });
+  const allEvents = [...staticEvents, ...customEvents];
   
   const [activeEvent, setActiveEvent] = useState(allEvents[0]?.id || '');
   const currentEvent = allEvents.find(e => e.id === activeEvent);
