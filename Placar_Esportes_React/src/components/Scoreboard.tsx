@@ -22,9 +22,12 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
   const allEvents = [...staticEvents, ...customEvents];
   
   const [activeEvent, setActiveEvent] = useState(allEvents[0]?.id || '');
+  // Always derive currentEvent reactively from the latest allEvents (includes overrides)
   const currentEvent = allEvents.find(e => e.id === activeEvent);
+  // Derive tableType separately so useSupabase always gets the latest value
+  const currentTableType = currentEvent?.tableType || 'rankings';
   
-  const { data, loading } = useSupabase(sport.id, activeEvent, currentEvent?.tableType || 'matches');
+  const { data, loading } = useSupabase(sport.id, activeEvent, currentTableType);
 
   
 
@@ -33,10 +36,12 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
   };
 
   const renderRankingTable = () => {
+    // Use currentTableType (always reactive to overrides) for the column label
+    const tt = currentEvent?.tableType ?? currentTableType;
     const colLabel =
-      currentEvent?.tableType === 'ranking_time'   ? 'Tempo' :
-      currentEvent?.tableType === 'ranking_mark'   ? 'Marca' :
-      currentEvent?.tableType === 'ranking_points' ? 'Pontos' :
+      tt === 'ranking_time'   ? 'Tempo' :
+      tt === 'ranking_mark'   ? 'Marca' :
+      tt === 'ranking_points' ? 'Pontos' :
       'Tempo / Marca';
 
     return (
@@ -300,10 +305,10 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ sport, onBack }) => {
         <div className="loading">Carregando Resultados...</div>
       ) : (
         <div className="table-container">
-          {currentEvent?.tableType === 'matches' && renderMatchesTable()}
-          {currentEvent?.tableType === 'matches_sets' && renderMatchesSetsTable()}
-          {currentEvent?.tableType?.startsWith('ranking') && renderRankingTable()}
-          {currentEvent?.tableType === 'medals' && renderMedalsTable()}
+          {currentTableType === 'matches' && renderMatchesTable()}
+          {currentTableType === 'matches_sets' && renderMatchesSetsTable()}
+          {currentTableType.startsWith('ranking') && renderRankingTable()}
+          {currentTableType === 'medals' && renderMedalsTable()}
         </div>
       )}
     </div>
