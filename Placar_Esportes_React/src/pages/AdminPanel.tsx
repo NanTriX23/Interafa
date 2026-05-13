@@ -118,7 +118,7 @@ export const AdminPanel = () => {
     setNewMedal({ ...newMedal, position: pos, points: pts });
   };
 
-  const handleUpdateScore = async (id: string, field: 'score1' | 'score2', currentScore: number, change: number) => {
+  const handleUpdateScore = async (id: string, field: string, currentScore: number, change: number) => {
     const newScore = Math.max(0, currentScore + change);
     const { error } = await supabase.from('matches').update({ [field]: newScore }).eq('id', id);
     if (error) alert('Erro ao atualizar placar: ' + error.message);
